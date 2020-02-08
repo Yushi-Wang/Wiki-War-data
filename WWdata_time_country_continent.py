@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Oct 12 19:51:36 2019
+This file is for matching battles with countries and continents. I reviewed the tmp_WARS.do and used the method that Fabian used to
+ do this and only did some small changes. First, I kept those items that have a qidLabel with a format “Q1234”. Second, I used the 
+ country_ag in qid_time_location.csv as an additional source of the country information and use “7” in “country_source” to indicate this source.
 
 @author: leo
 """
@@ -21,13 +24,16 @@ qidAltSubject_en_path=loadin_path+"Data/A1_00_qidAltSubject_en.dta"
 qidSubject_path=loadin_path+"Data/A1_00_qidSubject.dta"
 qid_capital_country_path=loadin_path+"Data/qid_capital.tsv"
 country_map_in_path=loadin_path+"Data/A1_05_03_mapCountry.dta"
-wid_to_qid_path=loadin_path+"Data/wid_to_qid.tsv"
+#wid_to_qid_path=loadin_path+"Data/wid_to_qid.tsv"
+wid_to_qid_path='D:/learning/Arash/war_participants/articles/infobox/input/wid_to_qid.tsv'
 qid_battle_path=loadin_path+"Data/qid_battle.tsv"
 qid_time_location_path=loadin_path+"Data/qid_time_location.csv"
 info_time_path="D:/learning/Arash/war_participants/articles/infobox/output/wikiWar_info_time.csv"
 participant_path=loadin_path+"Data/participant.tsv"
-war_commander_infobox_path=loadin_path+"Data/war_commander_infobox.csv"
-war_participant_infobox_path=loadin_path+"Data/war_participant_infobox.csv"
+#war_commander_infobox_path=loadin_path+"Data/war_commander_infobox.csv"
+war_commander_infobox_path="D:/learning/Arash/war_participants/articles/infobox/output/wikiWAR_commander_infobox.csv"
+#war_participant_infobox_path=loadin_path+"Data/war_participant_infobox.csv"
+war_participant_infobox_path="D:/learning/Arash/war_participants/articles/infobox/output/wikiWAR_participant_infobox.csv"
 mapContinent_path=loadin_path+"Data/A1_05_03_mapContinent.dta"
 ######Time from wikidata
 qid_time_location=pd.read_csv(qid_time_location_path)

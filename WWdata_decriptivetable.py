@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Oct 14 14:20:00 2019
-
+This file is for getting the discriptivetable of WW data
 @author: leo
 """
 import numpy as np

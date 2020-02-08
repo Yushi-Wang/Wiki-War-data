@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct  9 09:06:30 2019
-
+This file is for merging the corresponding datasets got from part1 and part2, 
+thus to obtaining the total conflicts' time information, participants information, 
+commanders information and part of information.  This file also provides statistics 
+on the number of conflicts (or battles) happened per decade( or 25 years) after 1400 
+in Europe or around the world. 
 @author: leo
 """
 
@@ -27,13 +31,20 @@ time=time[0:10]
 missingtable_path=main_path+'tem/WWdata_descriptive_table_infobox'+time+'.xls'
 participant_path="D:/learning/Arash/war_participants/Fabian_06292019_WAR/Data/participant.tsv"
 qid_time_location_path='D:/learning/Arash/war_participants/Fabian_06292019_WAR/Data/qid_time_location.csv'
-war_participant_infobox_path="D:/learning/Arash/war_participants/articles/infobox/output/war_participant_infobox.csv"
+war_participant_infobox_path="D:/learning/Arash/war_participants/articles/infobox/output/wikiWAR_participant_infobox.csv"
 war_commander_infobox_path="D:/learning/Arash/war_participants/articles/infobox/output/wikiWAR_commander_infobox.csv"
 war_partof_infobox_path="D:/learning/Arash/war_participants/articles/infobox/output/partof_infobox.csv"
 wid_to_qid_path='D:/learning/Arash/war_participants/articles/infobox/input/wid_to_qid.tsv'
 qid_battle_path="D:/learning/Arash/war_participants/Fabian_06292019_WAR/Data/qid_battle.tsv"
+wikidata_battle_qid_path=main_path+'tmp/wikidata_battle_qid.csv'
+WWdata_time_path=main_path+'output/WWdata_time.csv'
+WWdata_participant_path=main_path+"output/WWdata_participant.csv"
+WWdata_commander_path=main_path+"output/WWdata_commander.csv"
+WWdata_partof_path=main_path+"output/WWdata_partof.csv"
+
+
 """
-#####################merge merge the two datasets(infobox and wikidata), dropping duplicates and call them WW-data (Wiki-War Data)#################
+##################### merge the two datasets(infobox and wikidata), dropping duplicates and call them WW-data (Wiki-War Data)#################
 """
 ######################first step: time########################
 def clean_infobox(file,file_out):
@@ -108,7 +119,8 @@ qid_time_location.rename(columns={'start_time_y': 'start_time','end_time_y': 'en
 qid_time_location.drop_duplicates(inplace=True)
 wikidata_battle_qid=qid_time_location.loc[:,['qid']]
 wikidata_battle_qid.drop_duplicates(inplace=True)
-wikidata_battle_qid.to_csv(main_path+'tmp/wikidata_battle_qid.csv',index=False)
+#wikidata_battle_qid.to_csv(main_path+'tmp/wikidata_battle_qid.csv',index=False)
+wikidata_battle_qid.to_csv(wikidata_battle_qid_path,index=False)
 qid_time=qid_time_location.loc[:,['qid','qidLabel','start_time','accuracy_start','end_time','accuracy_end']]
 qid_time.drop_duplicates(inplace=True)
 #####
@@ -158,8 +170,17 @@ WWdata_time=WWdata_time.replace(0,np.nan)
 WWdata_time=WWdata_time.loc[:,['qid','title','start_year','accuracy_start_info','end_year','accuracy_end_info']]
 WWdata_time.drop_duplicates(inplace=True)
 
-WWdata_time.to_csv(main_path+'output/WWdata_time.csv',index=False)
+WWdata_time.loc[WWdata_time.qid==431806,'start_year']=1536
+WWdata_time.loc[WWdata_time.qid==431806,'end_year']=1883
+WWdata_time.loc[WWdata_time.qid==828435,'start_year']=1519
+WWdata_time.loc[WWdata_time.qid==828435,'end_year']=1521
+WWdata_time.loc[WWdata_time.qid==815436,'start_year']=1969
+WWdata_time.loc[WWdata_time.qid==4110453,'start_year']=1511
+WWdata_time.loc[WWdata_time.qid==18378977,'start_year']=1726
+WWdata_time.loc[WWdata_time.qid==5453254,'start_year']=1728
 
+#WWdata_time.to_csv(main_path+'output/WWdata_time.csv',index=False)
+WWdata_time.to_csv(WWdata_time_path,index=False)
 
 ######################################################
 ################second step: participant##################
@@ -192,7 +213,8 @@ WWdata_participant['source']=np.nan
 
 WWdata_participant=add_source(WWdata_participant,WWdata_participant,'participants','qid_participant',1,2)
 
-WWdata_participant.to_csv(main_path+"output/WWdata_participant.csv",index=False)
+#WWdata_participant.to_csv(main_path+"output/WWdata_participant.csv",index=False)
+WWdata_participant.to_csv(WWdata_participant_path,index=False)
 
 ##########################################################
 ################third step: commander#####################
@@ -219,7 +241,8 @@ war_commander_infobox.loc[(war_commander_infobox.has_country!=0)&(war_commander_
 
 war_commander_infobox.drop(['wid','has_country'],axis=1, inplace=True)
 
-war_commander_infobox.to_csv(main_path+"output/WWdata_commander.csv",index=False)
+#war_commander_infobox.to_csv(main_path+"output/WWdata_commander.csv",index=False)
+war_commander_infobox.to_csv(WWdata_commander_path,index=False)
 ##########################################################
 
 ################Forth step: partof########################
@@ -257,8 +280,8 @@ WWdata_partof['source']=np.nan
 
 WWdata_partof=add_source(WWdata_partof,WWdata_partof,'partof','partof_qid',1,2)
 WWdata_partof=WWdata_partof.loc[:,['qid','title','partof','source']]
-WWdata_partof.to_csv(main_path+"output/WWdata_partof.csv",index=False)
-
+#WWdata_partof.to_csv(main_path+"output/WWdata_partof.csv",index=False)
+WWdata_partof.to_csv(WWdata_partof_path,index=False)
 
 
 ##########################################################
@@ -451,6 +474,11 @@ WWdata_time_w1400_quar=pd.merge(WWdata_time_w1400_quar,WWdata_time_battles_w1400
 WWdata_time_w1400_dec=pd.merge(WWdata_time_w1400_dec,WWdata_time_battles_w1400_dec, on='decade', how='outer')
 WWdata_time_eu1400_quar=pd.merge(WWdata_time_eu1400_quar,WWdata_time_battles_eu1400_quar, on='quarter', how='outer')
 WWdata_time_eu1400_dec=pd.merge(WWdata_time_eu1400_dec,WWdata_time_battles_eu1400_dec, on='decade', how='outer')
+
+WWdata_time_w1400_quar['quarter']=WWdata_time_w1400_quar['quarter']+12.5
+WWdata_time_eu1400_quar['quarter']=WWdata_time_eu1400_quar['quarter']+12.5
+WWdata_time_w1400_dec['decade']=WWdata_time_w1400_dec['decade']+5
+WWdata_time_eu1400_dec['decade']=WWdata_time_eu1400_dec['decade']+5
 
 WWdata_time_w1400_quar.to_csv(main_path+'output/WWdata_time_w1400_quar.csv', index=False)
 WWdata_time_w1400_dec.to_csv(main_path+'output/WWdata_time_w1400_dec.csv', index=False)
